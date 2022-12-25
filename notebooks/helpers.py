@@ -32,3 +32,14 @@ def get_fitbit_client() -> fitbit.Fitbit:
 def get_heart_data(client: fitbit.Fitbit = None):
     client = client or get_fitbit_client()
     client.heart()
+
+
+def main():
+    get_heart_data()
+
+
+if __name__ == "__main__":
+    import logging
+
+    logging.basicConfig(level=logging.INFO)
+    main()

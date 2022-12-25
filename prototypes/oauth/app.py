@@ -9,13 +9,15 @@ import json
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 import requests
 
 
 # Replace these values with your own client ID and client secret
-CLIENT_ID = os.environ.get("OAUTH_ID")
-CLIENT_SECRET = os.environ.get("OAUTH_SECRET")
+# CLIENT_ID = os.environ.get("OAUTH_ID")
+# CLIENT_SECRET = os.environ.get("OAUTH_SECRET")
+CLIENT_ID = os.environ.get("PERSONAL_OAUTH_ID")
+CLIENT_SECRET = os.environ.get("PERSONAL_OAUTH_SECRET")
 
 # The authorization URL for Fitbit's OAuth 2.0 authorization server
 AUTH_URL = "https://www.fitbit.com/oauth2/authorize"
@@ -27,7 +29,7 @@ TOKEN_URL = "https://api.fitbit.com/oauth2/token"
 REDIRECT_URL = "http://localhost:8000/callback"
 
 # The URL of the protected resource that you want to access
-RESOURCE_URL = "https://api.fitbit.com/1/user/-/activities/date/today.json"
+RESOURCE_URL = "https://api.fitbit.com/1/user/-/activities/heart/date/2022-12-24/1d.json"
 
 # A state value to use for CSRF protection
 STATE = secrets.token_hex(16)
@@ -62,7 +64,7 @@ app.add_middleware(SessionMiddleware, secret_key=SESSION_MIDDLEWARE_SECRET)
 @app.get("/")
 def index():
     # Return the index.html file from the static directory
-    return Path("fe/index.html").read_text()
+    return HTMLResponse(Path("fe/index.html").read_text())
 
 
 @app.get("/login")

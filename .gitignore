@@ -1,4 +1,7 @@
 venv/
 scratch/
+__pycache__/
+token.json
+.ipynb_checkpoints/
 *.pyc
 .env

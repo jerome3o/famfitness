@@ -25,9 +25,6 @@ TOKEN_URL = "https://api.fitbit.com/oauth2/token"
 
 # The URL of your application
 REDIRECT_URL = "http://localhost:8000/callback"
-# REDIRECT_URL = "https://www.jeromeswannack.com/fitbit/app"
-# REDIRECT_URL = "http://localhost:8000/callback"
-# REDIRECT_URL = "https://www.jeromeswannack.com/"
 
 # The URL of the protected resource that you want to access
 RESOURCE_URL = "https://api.fitbit.com/1/user/-/activities/date/today.json"

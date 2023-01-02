@@ -40,6 +40,14 @@ def get_user(session: Session, name: str) -> User:
     return user
 
 
+def update_user(session: Session, name: str, token: str, refresh_token: str) -> None:
+    user = get_user(session, name)
+    user.token = token
+    user.refresh_token = refresh_token
+    session.commit()
+    session.close()
+
+
 def main():
     # setup sqlite database
     engine = create_engine("sqlite:///test.db")

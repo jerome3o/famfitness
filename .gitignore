@@ -7,3 +7,4 @@ personal_token.json
 .env
 *.pyc
 *.png
+*.db

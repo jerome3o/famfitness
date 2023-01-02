@@ -1,2 +1,4 @@
-pylint==2.15.9
-black==22.12.0
+black
+pylint
+debugpy
+ipdb

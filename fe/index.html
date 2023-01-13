@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Fitbit OAuth 2.0 Example</title>
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.7.1/dist/css/bootstrap.min.css" integrity="sha256-ouhJK2bQt1zKcN+lXaK9VQm6TdO6TlF6j/L6rm0i6U=" crossorigin="anonymous">
+  </head>
+  <body>
+    <!-- Use Bootstrap's container and row classes to center the login button -->
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <button id="login-button" class="btn btn-primary">Log in with Fitbit</button>
+      </div>
+    </div>
+
+    <!-- Use Bootstrap's card and pre classes to style the response -->
+    <div id="response" class="container mt-5">
+      <div class="card">
+        <pre class="card-body"></pre>
+      </div>
+    </div>
+
+    <script>
+      const loginButton = document.getElementById("login-button");
+      const responseDiv = document.getElementById("response");
+
+      loginButton.addEventListener("click", () => {
+        // Redirect the user to the /login endpoint
+        window.location.href = "/login";
+      });
+    </script>
+  </body>
+</html>
+

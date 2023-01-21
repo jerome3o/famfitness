@@ -1,6 +1,5 @@
 import base64
 import secrets
-import os
 import hashlib
 from pathlib import Path
 from urllib.parse import quote
@@ -12,52 +11,27 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, HTMLResponse
 import requests
 
-from auth.sql import add_user, get_user, update_user
-
-# Replace these values with your own client ID and client secret
-CLIENT_ID = os.environ.get("OAUTH_ID")
-CLIENT_SECRET = os.environ.get("OAUTH_SECRET")
-
-# The authorization URL for Fitbit's OAuth 2.0 authorization server
-AUTH_URL = "https://www.fitbit.com/oauth2/authorize"
-
-# The token URL for Fitbit's OAuth 2.0 authorization server
-TOKEN_URL = "https://api.fitbit.com/oauth2/token"
-
-# The URL of your application
-REDIRECT_URL = "http://localhost:8000/callback"
-
-# The URL of the protected resource that you want to access
-RESOURCE_URL = "https://api.fitbit.com/1/user/-/activities/heart/date/2022-12-24/1d.json"
-
-# A state value to use for CSRF protection
-STATE = secrets.token_hex(16)
-
-# Secret value for session
-SESSION_MIDDLEWARE_SECRET = secrets.token_hex(16)
-
-
-# SCOPE
-SCOPES = [
-    "activity",
-    "heartrate",
-    "location",
-    "nutrition",
-    "oxygen_saturation",
-    "profile",
-    "respiratory_rate",
-    "settings",
-    "sleep",
-    "social",
-    "temperature",
-    "weight",
-]
+from auth.helpers import get_token
+from constants import (
+    CLIENT_ID,
+    CLIENT_SECRET,
+    AUTH_URL,
+    TOKEN_URL,
+    REDIRECT_URL,
+    RESOURCE_URL,
+    STATE,
+    SESSION_MIDDLEWARE_SECRET,
+    SCOPES,
+)
 
 
 app = FastAPI()
 
 # Install the SessionMiddleware
-app.add_middleware(SessionMiddleware, secret_key=SESSION_MIDDLEWARE_SECRET)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_MIDDLEWARE_SECRET,
+)
 
 
 @app.get("/")
@@ -70,40 +44,37 @@ def index():
 def callback(request: Request, code: str, state: str) -> Response:
     """Exchange the authorization code for an access token."""
     # Validate the state value to protect against CSRF attacks
+
     if state != STATE:
         return Response(status_code=400, content="Invalid state value")
 
     # Get the code verifier from the user's session
     code_verifier = request.session["code_verifier"]
 
-    auth_token = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode("utf-8")).decode("utf-8")
-    auth_header = f"Basic {auth_token}"
+    # get access_token from session if its there, otherwise use get token
+    access_token = request.session.get("access_token")
+    if not access_token:
+        token_response = get_token(code_verifier, code)
+        access_token = token_response["access_token"]
+        request.session["access_token"] = access_token
 
-    # Send a request to the token URL to exchange the authorization code for an access token
-    token_response = requests.post(
-        TOKEN_URL,
-        data={
-            "grant_type": "authorization_code",
-            "client_id": CLIENT_ID,
-            "code_verifier": code_verifier,
-            "redirect_uri": REDIRECT_URL,
-            "code": code,
-        },
-        headers={"Authorization": auth_header},
-    )
-    print(token_response.json())
-
-    # Extract the access token from the response
-    access_token = token_response.json()["access_token"]
+        # if the token has the user_id field, save it as json to the tokens/ folder
+        if "user_id" in token_response:
+            user_id = token_response["user_id"]
+            with open(f"tokens/{user_id}.json", "w") as file:
+                json.dump(token_response, file)
 
     # Send a request to the protected resource using the access token
     resource_response = requests.get(
-        RESOURCE_URL, headers={"Authorization": f"Bearer {access_token}"}
+        RESOURCE_URL,
+        headers={"Authorization": f"Bearer {access_token}"},
+        timeout=5,
     )
 
     # Return the response from the protected resource
     return Response(
-        content=json.dumps(resource_response.json(), indent=4), media_type="application/json"
+        content=json.dumps(resource_response.json(), indent=4),
+        media_type="application/json",
     )
 
 

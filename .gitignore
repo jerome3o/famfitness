@@ -4,6 +4,7 @@ __pycache__/
 .ipynb_checkpoints/
 token.json
 personal_token.json
+tokens/
 .env
 *.pyc
 *.png

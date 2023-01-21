@@ -13,7 +13,7 @@ import requests
 
 from famfitness.auth.helpers import get_token
 from famfitness.constants import (
-    CLIENT_SECRET,
+    CLIENT_ID,
     AUTH_URL,
     REDIRECT_URL,
     RESOURCE_URL,

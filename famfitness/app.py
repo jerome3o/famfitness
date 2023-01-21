@@ -11,12 +11,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, HTMLResponse
 import requests
 
-from auth.helpers import get_token
-from constants import (
-    CLIENT_ID,
+from famfitness.auth.helpers import get_token
+from famfitness.constants import (
     CLIENT_SECRET,
     AUTH_URL,
-    TOKEN_URL,
     REDIRECT_URL,
     RESOURCE_URL,
     STATE,

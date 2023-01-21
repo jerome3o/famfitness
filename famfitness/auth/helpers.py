@@ -2,7 +2,7 @@ import base64
 
 import requests
 
-from constants import CLIENT_ID, CLIENT_SECRET, REDIRECT_URL, TOKEN_URL
+from famfitness.constants import CLIENT_ID, CLIENT_SECRET, REDIRECT_URL, TOKEN_URL
 
 
 def get_token(code_verifier: str, code: str) -> dict:

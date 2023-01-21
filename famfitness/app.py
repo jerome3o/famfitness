@@ -107,7 +107,7 @@ def login(request: Request) -> Response:
 
 
 # Serve the "fe" directory as a static directory
-app.mount("/", StaticFiles(directory="fe"), name="static")
+app.mount("/", StaticFiles(directory="famfitness/fe"), name="static")
 
 
 def main():

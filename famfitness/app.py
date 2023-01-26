@@ -15,6 +15,7 @@ from famfitness.auth.helpers import get_token
 from famfitness.constants import (
     CLIENT_ID,
     AUTH_URL,
+    URL,
     REDIRECT_URL,
     RESOURCE_URL,
     STATE,
@@ -35,7 +36,7 @@ app.add_middleware(
 @app.get("/")
 def index():
     # Return the index.html file from the static directory
-    return HTMLResponse(Path("fe/index.html").read_text())
+    return HTMLResponse(Path("famfitness/fe/index.html").read_text())
 
 
 @app.get("/callback")

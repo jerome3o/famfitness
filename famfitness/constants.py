@@ -1,6 +1,7 @@
 import os
 import secrets
 
+URL = os.environ.get("URL", "http://localhost:8000").rstrip("/")
 
 # Replace these values with your own client ID and client secret
 CLIENT_ID = os.environ.get("OAUTH_ID")
@@ -13,7 +14,7 @@ AUTH_URL = "https://www.fitbit.com/oauth2/authorize"
 TOKEN_URL = "https://api.fitbit.com/oauth2/token"
 
 # The URL of your application
-REDIRECT_URL = "http://localhost:8000/callback"
+REDIRECT_URL = f"{URL}/callback"
 
 # The URL of the protected resource that you want to access
 RESOURCE_URL = "https://api.fitbit.com/1/user/-/activities/heart/date/2022-12-24/1d.json"
